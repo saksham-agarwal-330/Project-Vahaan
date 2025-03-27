@@ -1,37 +1,71 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Input } from "./ui/input";
 import { Camera, Upload } from "lucide-react";
 import { Button } from "./ui/button";
 import { useDropzone } from "react-dropzone";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import useFetch from "@/hooks/use-fetch";
+import { processImageSearch } from "@/actions/home";
 const HomeSearch = () => {
   const [searchText, setSearchText] = useState("");
   const [isImageSearchActive, setIsImageSearchActive] = useState(false);
   const [imagePreview, setImagePreview] = useState("");
   const [searchImage, setSearchImage] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
-  const router =useRouter();
+  const router = useRouter();
+
+  const {
+    loading: isProcessing,
+    fn: processImageFn,
+    data: processImageResult,
+    error: processImageError,
+  } = useFetch(processImageSearch);
 
   const handleTextSubmit = (e) => {
     e.preventDefault();
-    if(!searchText.trim()){
+    if (!searchText.trim()) {
       toast.error("Please enter a search text");
       return;
-    } 
-    
+    }
+
     router.push(`/search?search=${encodeURIComponent(searchText)}`);
   };
-  const handleImageSearch = async(e) => {
+  const handleImageSearch = async (e) => {
     e.preventDefault();
-    if(!searchImage){
+    if (!searchImage) {
       toast.error("Please upload an image");
       return;
     }
-    toast.success("Image search started");
+    await processImageFn(searchImage);
   };
+
+  useEffect(() => {
+    if (processImageError) {
+      toast.error(
+        "Failed to analyze image:" +
+          (processImageError.message || "Unkonwn error")
+      );
+    }
+  }, [processImageError]);
+
+  useEffect(() => {
+    if (processImageResult) {
+      const params = new URLSearchParams();
+      if (processImageResult.data.make) {
+        params.set("make", processImageResult.data.make);
+      }
+      if (processImageResult.data.bodyType) {
+        params.set("bodyType", processImageResult.data.bodyType);
+      }
+      if (processImageResult.data.color) {
+        params.set("color", processImageResult.data.color);
+      }
+      router.push(`/search?${params.toString()}`);
+    }
+  }, [processImageResult]);
   const onDrop = (acceptedFiles) => {
     const file = acceptedFiles[0];
     if (file) {
@@ -138,9 +172,14 @@ const HomeSearch = () => {
               <Button
                 type="submit"
                 className="w-full mt-2"
-                disabled={isUploading}>
-                  {isUploading?"Uploading...":"Search with this Image"}
-                </Button>
+                disabled={isUploading || isProcessing}
+              >
+                {isUploading
+                  ? "Uploading..."
+                  : isProcessing
+                  ? "Analyzing Image..."
+                  : "Search with this Image"}
+              </Button>
             )}
           </form>
         </div>

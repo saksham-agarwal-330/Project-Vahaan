@@ -2,7 +2,16 @@
 
 import React, { use, useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Clock, Loader2, Save, Search, Shield, User } from "lucide-react";
+import {
+  Clock,
+  Loader2,
+  Save,
+  Search,
+  Shield,
+  User,
+  Users,
+  UserX,
+} from "lucide-react";
 import useFetch from "@/hooks/use-fetch";
 import {
   getDealershipInfo,
@@ -23,6 +32,16 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import Image from "next/image";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
 
 const DAYS = [
   { value: "MONDAY", label: "Monday" },
@@ -104,6 +123,25 @@ const SettingsForm = () => {
   } = useFetch(updateUserRole);
 
   useEffect(() => {
+    if (updateRoleError) {
+      toast.error(`Failed to update user role: ${updateRoleError.message}`);
+    }
+    if (usersError) {
+      toast.error(`Failed to fetch users: ${usersError.message}`);
+    }
+    if (saveWorkingHoursError) {
+      toast.error(
+        `Failed to save working hours: ${saveWorkingHoursError.message}`
+      );
+    }
+    if (dealershipInfoError) {
+      toast.error(
+        `Failed to fetch dealership info: ${dealershipInfoError.message}`
+      );
+    }
+  }, [updateRoleError, usersError, saveWorkingHoursError, dealershipInfoError]);
+
+  useEffect(() => {
     fetchDealershipInfo();
     fetchUsers();
   }, []);
@@ -116,6 +154,18 @@ const SettingsForm = () => {
 
   const handleSaveHours = async () => {
     await saveWorkingHoursFn(workingHours);
+  };
+
+  const handleMakeAdmin = async (user) => {
+    if (confirm(`Are you sure you want to make ${user.name} an admin?`)) {
+      await updateRoleFn(user.id, "ADMIN");
+    }
+  };
+
+  const handleRemoveAdmin = async (user) => {
+    if (confirm(`Are you sure you want to remove ${user.name} as an admin?`)) {
+      await updateRoleFn(user.id, "USER");
+    }
   };
 
   const filteredUsers = usersData?.success
@@ -131,7 +181,11 @@ const SettingsForm = () => {
       toast.success("Working hours saved successfully");
       fetchDealershipInfo();
     }
-  }, [saveWorkingHoursData]);
+    if (updateRoleData?.success) {
+      toast.success("User role updated successfully");
+      fetchUsers();
+    }
+  }, [saveWorkingHoursData, updateRoleData]);
   return (
     <div className="space-y-6">
       <Tabs defaultValue="hours">
@@ -256,7 +310,107 @@ const SettingsForm = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              
+              <div className="mb-6 relative">
+                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
+                <Input
+                  type="search"
+                  placeholder="Search users"
+                  className="pl-9 w-full"
+                  value={userSearch}
+                  onChange={(e) => setUserSearch(e.target.value)}
+                />
+              </div>
+
+              {fetchingUsers ? (
+                <div className="py-12 flex justify-center">
+                  <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+                </div>
+              ) : usersData?.success && filteredUsers.length > 0 ? (
+                <div>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>User</TableHead>
+                        <TableHead>Email</TableHead>
+                        <TableHead>Role</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {filteredUsers.map((user) => {
+                        return (
+                          <TableRow key={user.id}>
+                            <TableCell className="font-medium">
+                              <div className="flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden relative">
+                                  {user.imageUrl ? (
+                                    <img
+                                      src={user.imageUrl}
+                                      alt={user.name || "User"}
+                                      className="w-full h-full object-cover"
+                                    />
+                                  ) : (
+                                    <User className="h-4 w-4 text-gray-500" />
+                                  )}
+                                </div>
+                                <span>{user.name || "Unamed User"}</span>
+                              </div>
+                            </TableCell>
+                            <TableCell>{user.email}</TableCell>
+                            <TableCell>
+                              <Badge
+                                className={
+                                  user.role === "ADMIN"
+                                    ? "bg-green-800"
+                                    : "bg-gray-800"
+                                }
+                              >
+                                {user.role}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="text-right">
+                              {user.role === "ADMIN" ? (
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  className="text-red-600"
+                                  onClick={() => handleRemoveAdmin(user)}
+                                  disabled={updatingRole}
+                                >
+                                  <UserX className="h-4 w-4 mr-2" />
+                                  Remove Admin
+                                </Button>
+                              ) : (
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => handleMakeAdmin(user)}
+                                  disabled={updatingRole}
+                                >
+                                  <Shield className="h-4 w-4 mr-2" />
+                                  Make Admin
+                                </Button>
+                              )}
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                </div>
+              ) : (
+                <div className="py-12 text-center">
+                  <Users className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-1">
+                    No users found
+                  </h3>
+                  <p className="text-gray-500">
+                    {userSearch
+                      ? "No users match your search criteria"
+                      : "There are no users registered yet"}
+                  </p>
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
