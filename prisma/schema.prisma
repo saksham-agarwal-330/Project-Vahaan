@@ -90,6 +90,11 @@ model WorkingHours {
   isOpen       Boolean
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
+
+  @@unique([dealershipId, dayOfWeek])
+  @@index([dealershipId])
+  @@index([dayOfWeek])
+  @@index([isOpen])
 }
 
 enum DayOfWeek {
@@ -110,7 +115,7 @@ model UserSavedCar {
   car     Car      @relation(fields: [carId], references: [id], onDelete: Cascade)
   savedAt DateTime @default(now())
 
-  @@index([userId, carId])
+  @@unique([userId, carId])
   @@index([carId])
   @@index([userId])
 }
@@ -142,4 +147,3 @@ enum TestDriveStatus {
   COMPLETED
   No_SHOW
 }
-
