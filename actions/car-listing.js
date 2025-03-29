@@ -309,7 +309,7 @@ export async function getCarById(carId) {
             isWishlisted = !!savedCar
         }
 
-        const existingTestDrive = await db.TestDrive.findFirst({
+        const existingTestDrive = await db.TestDriveBooking.findFirst({
             where: {
                 carId,
                 userId: dbUser?.id,
@@ -329,7 +329,7 @@ export async function getCarById(carId) {
             }
         }
 
-        const dealership = await db.dealership.findFirst({
+        const dealership = await db.DealerShipInfo.findFirst({
             include: {
                 workingHours: true,
             }
