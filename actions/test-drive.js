@@ -1,9 +1,9 @@
 "use server";
 
 import { serializedCarData } from "@/lib/helper";
-import { auth } from "@clerk/nextjs/dist/types/server";
+import { db } from "@/lib/prisma";
+import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
-
 
 export async function bookTestDrive({
     carId,

@@ -24,7 +24,7 @@ const CarListings = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
-  const limit = 2;
+  const limit = 6;
 
   // Extracting filter values from the search params
   const search = searchParams.get("search") || "";
