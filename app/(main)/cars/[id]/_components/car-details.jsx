@@ -104,6 +104,7 @@ const CarDetails = ({ car, testDriveInfo }) => {
   return (
     <div>
       <div className="flex flex-col lg:flex-row gap-8">
+        {/* Car Images */}
         <div className="w-full lg:w-7/12">
           <div className="aspect-video rounded-lg overflow-hidden relative mb-4">
             {car.images && car.images.length > 0 ? (
@@ -170,6 +171,7 @@ const CarDetails = ({ car, testDriveInfo }) => {
             </Button>
           </div>
         </div>
+        {/* Car test drive booking */}
         <div>
           <div className="flex items-center justify-between">
             <Badge className="mb-2">{car.bodyType}</Badge>
@@ -208,7 +210,10 @@ const CarDetails = ({ car, testDriveInfo }) => {
                     Estimated Monthly Payment:{" "}
                     <span className="font-bold text-gray-900">
                       {formatCurrency(
-                        ((car.price * 0.85) * (0.05 / 12) * Math.pow(1 + 0.05 / 12, 60)) /
+                        (car.price *
+                          0.85 *
+                          (0.05 / 12) *
+                          Math.pow(1 + 0.05 / 12, 60)) /
                           (Math.pow(1 + 0.05 / 12, 60) - 1)
                       )}
                     </span>{" "}
@@ -245,7 +250,7 @@ const CarDetails = ({ car, testDriveInfo }) => {
               </a>
             </CardContent>
           </Card>
-          {(car.status === "SOLD" || car.status === "UNAvailable") && (
+          {(car.status === "SOLD" || car.status === "UNAVAILABLE") && (
             <Alert variant="destructive">
               <AlertTitle className="capitalize">
                 This car is {car.status.toLowerCase()}
@@ -257,11 +262,11 @@ const CarDetails = ({ car, testDriveInfo }) => {
           {car.status !== "SOLD" && car.status !== "UNAVAILABLE" && (
             <Button
               className="w-full py-6 text-lg"
-              disabled={testDriveInfo?.userTestDrive}
+              disabled={testDriveInfo.userTestDrive}
               onClick={handleBookTestDrive}
             >
               <Calendar className="h-5 w-5 mr-2" />
-              {testDriveInfo?.userTestDrive
+              {testDriveInfo.userTestDrive
                 ? `Booked For ${format(
                     new Date(testDriveInfo.userTestDrive.bookingDate),
                     "EEEE,MMMM d, yyyy"
@@ -383,6 +388,65 @@ const CarDetails = ({ car, testDriveInfo }) => {
             </div>
 
             {/* Working Hours */}
+            {/* Working Hours */}
+            <div className="md:w-1/2 lg:w-1/3">
+              <h4 className="font-medium mb-2">Working Hours</h4>
+              <div className="space-y-2">
+                {testDriveInfo.dealership?.workingHours
+                  ? testDriveInfo.dealership.workingHours
+                      .sort((a, b) => {
+                        const days = [
+                          "MONDAY",
+                          "TUESDAY",
+                          "WEDNESDAY",
+                          "THURSDAY",
+                          "FRIDAY",
+                          "SATURDAY",
+                          "SUNDAY",
+                        ];
+                        return (
+                          days.indexOf(a.dayOfWeek) - days.indexOf(b.dayOfWeek)
+                        );
+                      })
+                      .map((day) => (
+                        <div
+                          key={day.dayOfWeek}
+                          className="flex justify-between text-sm"
+                        >
+                          <span className="text-gray-600">
+                            {day.dayOfWeek.charAt(0) +
+                              day.dayOfWeek.slice(1).toLowerCase()}
+                          </span>
+                          <span>
+                            {day.isOpen
+                              ? `${day.openTime} - ${day.closeTime}`
+                              : "Closed"}
+                          </span>
+                        </div>
+                      ))
+                  : // Default hours if none provided
+                    [
+                      "Monday",
+                      "Tuesday",
+                      "Wednesday",
+                      "Thursday",
+                      "Friday",
+                      "Saturday",
+                      "Sunday",
+                    ].map((day, index) => (
+                      <div key={day} className="flex justify-between text-sm">
+                        <span className="text-gray-600">{day}</span>
+                        <span>
+                          {index < 5
+                            ? "9:00 - 18:00"
+                            : index === 5
+                            ? "10:00 - 16:00"
+                            : "Closed"}
+                        </span>
+                      </div>
+                    ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>

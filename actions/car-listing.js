@@ -136,7 +136,7 @@ export async function getCars({
 
         let wishlisted = new Set()
         if (dbUser) {
-            const savedCars = await db.UserSavedCar.findMany({
+            const savedCars = await db.userSavedCar.findMany({
                 where: {
                     userId: dbUser.id,
                 },
@@ -298,7 +298,7 @@ export async function getCarById(carId) {
         }
         let isWishlisted = false
         if (dbUser) {
-            const savedCar = await db.UserSavedCar.findUnique({
+            const savedCar = await db.userSavedCar.findUnique({
                 where: {
                     userId_carId: {
                         userId: dbUser.id,
@@ -309,7 +309,7 @@ export async function getCarById(carId) {
             isWishlisted = !!savedCar
         }
 
-        const existingTestDrive = await db.TestDriveBooking.findFirst({
+        const existingTestDrive = await db.testDriveBooking.findFirst({
             where: {
                 carId,
                 userId: dbUser?.id,
@@ -329,7 +329,7 @@ export async function getCarById(carId) {
             }
         }
 
-        const dealership = await db.DealerShipInfo.findFirst({
+        const dealership = await db.dealerShipInfo.findFirst({
             include: {
                 workingHours: true,
             }

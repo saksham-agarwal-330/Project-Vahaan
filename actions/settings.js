@@ -11,7 +11,7 @@ export async function getDealershipInfo() {
     if (!userId) throw new Error("Unauthorized");
 
     // Get the dealership record
-    let dealership = await db.dealershipInfo.findFirst({
+    let dealership = await db.dealerShipInfo.findFirst({
       include: {
         workingHours: {
           orderBy: {
@@ -23,7 +23,7 @@ export async function getDealershipInfo() {
 
     // If no dealership exists, create a default one
     if (!dealership) {
-      dealership = await db.dealershipInfo.create({
+      dealership = await db.dealerShipInfo.create({
         data: {
           // Default values will be used from schema
           workingHours: {
@@ -113,27 +113,27 @@ export async function saveWorkingHours(workingHours) {
     }
 
     // Get current dealership info
-    const dealership = await db.dealershipInfo.findFirst();
+    const dealership = await db.dealerShipInfo.findFirst();
 
     if (!dealership) {
       throw new Error("Dealership info not found");
     }
 
     // Update working hours - first delete existing hours
-    await db.workingHour.deleteMany({
+    await db.workingHours.deleteMany({
       where: { dealershipId: dealership.id },
     });
 
     // Then create new hours
     for (const hour of workingHours) {
-      await db.workingHour.create({
+      await db.workingHours.create({
         data: {
-          dayOfWeek: hour.dayOfWeek,
           openTime: hour.openTime,
           closeTime: hour.closeTime,
           isOpen: hour.isOpen,
           dealershipId: dealership.id,
-        },
+          dayOfWeek: hour.DayOfWeek,
+        }
       });
     }
 

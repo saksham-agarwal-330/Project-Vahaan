@@ -27,11 +27,12 @@ export async function generateMetadata({ params }) {
 const CarPage = async ({ params }) => {
   const { id } = await params;
   const result = await getCarById(id);
+  
   if(!result.success) {
     notFound();
   }
   return <div className="container mx-auto px-4 py-12">
-    <CarDetails car={result.data} testDriveInfo={result.testDriveInfo} />
+    <CarDetails car={result.data} testDriveInfo={result.data.testDriveInfo} />
   </div>
 };
 
