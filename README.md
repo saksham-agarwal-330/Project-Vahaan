@@ -1,36 +1,69 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Vahaan 🚗🚙 - AI-Powered Car Search & Test Drive Booking
 
-## Getting Started
+## Installation
 
-First, run the development server:
+To install and set up the project, follow these steps:
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/your-username/vahaan.git
+```
+
+2. Navigate to the project directory:
+
+```bash
+cd vahaan
+```
+
+3. Install the dependencies:
+
+```bash
+npm install
+```
+
+4. Start the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+This will start the Next.js development server and make the application available at `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Usage
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The Vahaan project is a Next.js application that provides various features and functionalities. You can use the following commands to interact with the application:
 
-## Learn More
+- `npm run dev`: Starts the development server.
+- `npm run build`: Builds the application for production.
+- `npm start`: Starts the production server.
+- `npm run lint`: Runs the linter to check for code style and quality issues.
 
-To learn more about Next.js, take a look at the following resources:
+## API
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The Vahaan project utilizes several APIs and libraries, including:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- `@arcjet/next`: A Next.js framework for building web applications.
+- `@clerk/nextjs`: A user authentication and management solution for Next.js.
+- `@google/generative-ai`: A library for using Google's Generative AI models.
+- `@hookform/resolvers`: A library for form validation using Zod.
+- `@prisma/client`: A database client for interacting with a Prisma-managed database.
+- `@radix-ui/react-*`: A collection of Radix UI components for building user interfaces.
+- `@supabase/ssr`: A library for server-side rendering with Supabase.
+- `@supabase/supabase-js`: A client library for interacting with Supabase.
 
-## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Testing
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The Vahaan project uses the following tools for testing:
+
+- `eslint`: A linter for checking code style and quality.
+- `prisma`: A database toolkit for managing database schema and migrations.
+
+To run the tests, use the following commands:
+
+```bash
+npm run lint
+```
+
+This will run the linter and check for any code style or quality issues.
