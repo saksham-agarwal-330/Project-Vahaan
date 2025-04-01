@@ -262,14 +262,14 @@ const CarDetails = ({ car, testDriveInfo }) => {
           {car.status !== "SOLD" && car.status !== "UNAVAILABLE" && (
             <Button
               className="w-full py-6 text-lg"
-              disabled={testDriveInfo.userTestDrive}
+              disabled={["CONFIRMED", "PENDING"].includes(testDriveInfo.userTestDrive.status)}
               onClick={handleBookTestDrive}
             >
               <Calendar className="h-5 w-5 mr-2" />
-              {testDriveInfo.userTestDrive
+              {["CONFIRMED", "PENDING"].includes(testDriveInfo.userTestDrive.status)
                 ? `Booked For ${format(
                     new Date(testDriveInfo.userTestDrive.bookingDate),
-                    "EEEE,MMMM d, yyyy"
+                    "EEEE, MMMM d, yyyy"
                   )}`
                 : "Book a Test Drive"}
             </Button>

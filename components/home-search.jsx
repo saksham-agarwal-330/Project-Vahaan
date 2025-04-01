@@ -31,7 +31,7 @@ const HomeSearch = () => {
       return;
     }
 
-    router.push(`/search?search=${encodeURIComponent(searchText)}`);
+    router.push(`/cars?search=${encodeURIComponent(searchText)}`);
   };
   const handleImageSearch = async (e) => {
     e.preventDefault();
