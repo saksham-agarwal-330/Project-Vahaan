@@ -1,14 +1,17 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    experimental:{
-        serverComponentsHmrCache:false,
+    experimental: {
+    serverComponentsHmrCache: false,
+    serverActions: {
+      bodySizeLimit: "10mb", // ✅ ADD THIS
     },
+  },
 
     images:{
         remotePatterns:[
             {
                 protocol:"https",
-                hostname:"ihcjzptzdekdkwuedbea.supabase.co",
+                hostname:"zexxutiuedzcnqzpstuo.supabase.co",
             }
         ]
     }

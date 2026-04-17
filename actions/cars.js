@@ -21,7 +21,7 @@ export async function processCarImageWithAi(file) {
       throw new Error('Gemini API key not available')
     }
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" })
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
     const base64Image = await fileToBase64(file)
 
@@ -93,7 +93,7 @@ export async function processCarImageWithAi(file) {
         success: true,
         data: carDetails,
       }
-    } catch (error) {
+    } catch (parseError) {
       console.error("Failed to parse response as JSON", parseError)
       return {
         success: false,
